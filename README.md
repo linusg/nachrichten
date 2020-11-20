@@ -52,3 +52,7 @@ I'm lazy, so I have two aliases for watching the German news.
 tagesschau='vlc $(python3 /path/to/nachrichten.py tagesschau)'
 heute='vlc $(python3 /path/to/nachrichten.py heute)'
 ```
+
+## Redirect server
+
+[`server.py`](./server.py) is a simple [Flask](https://flask.palletsprojects.com) web app that will 302-redirect `/tagesschau` and `/heute` to the current videos - useful for when you need a permanent URL ([ht @codingcatgirl](https://twitter.com/codingcatgirl/status/1329616222909063168)).
