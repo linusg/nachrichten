@@ -91,16 +91,22 @@ def get_heute_video_url_from_page(url: str) -> Optional[str]:
     data_dialog = json.loads(download_button["data-dialog"])
     api_token = data_dialog["apiToken"]
     content_url = data_dialog["contentUrl"]
-    # No idea where this is coming from, I got it from inspecting the
-    # formatted URL in the browser's console
-    player_id = "zdf_pd_download_1"
+    # This is from https://www.zdf.de/ZDFplayer/configs/zdf/zdf2016/configuration.json
+    # The value from the download button is "zdf_pd_download_1", but it
+    # doesn't seem to work with every video ("heute 12 Uhr" was hiding
+    # the download button, for example, and the API response didn't
+    # have any download URLs)
+    player_id = "ngplayer_2_4"
     content_url = content_url.format(playerId=player_id)
     response = requests.get(content_url, headers={"Api-Auth": f"Bearer {api_token}"})
     response.raise_for_status()
     data = response.json()
+    # - "priorityList" can have multiple objects, each being in a
+    #   different format
+    # - "formitaeten" always seems to be a one-element array
+    # - "qualities" should be obvious, see the "quality" and "hd" keys
+    #   in each object
     qualities = data["priorityList"][0]["formitaeten"][0]["qualities"]
-    if not qualities:
-        return None
     qualities.sort(key=lambda entry: ["hd", "veryhigh", "high"].index(entry["quality"]))
     # YES, THIS IS A VIDEO!
     return qualities[0]["audio"]["tracks"][0]["uri"]
