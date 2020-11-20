@@ -20,6 +20,7 @@ ZDF_URL_TEMPLATE = "https://www.zdf.de{}"
 ZDF_SENDUNG_VERPASST_URL_TEMPLATE = ZDF_URL_TEMPLATE.format(
     "/sendung-verpasst?airtimeDate={:%Y-%m-%d}"
 )
+ZDF_QUALITY_OPTIONS = ["hd", "veryhigh", "high", "med", "auto"]
 
 
 def get_soup(url: str) -> BeautifulSoup:
@@ -107,7 +108,7 @@ def get_heute_video_url_from_page(url: str) -> Optional[str]:
     # - "qualities" should be obvious, see the "quality" and "hd" keys
     #   in each object
     qualities = data["priorityList"][0]["formitaeten"][0]["qualities"]
-    qualities.sort(key=lambda entry: ["hd", "veryhigh", "high"].index(entry["quality"]))
+    qualities.sort(key=lambda entry: ZDF_QUALITY_OPTIONS.index(entry["quality"]))
     # YES, THIS IS A VIDEO!
     return qualities[0]["audio"]["tracks"][0]["uri"]
 
