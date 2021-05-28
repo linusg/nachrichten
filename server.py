@@ -22,10 +22,8 @@ app = Flask(__name__)
 @app.route("/tagesschau")
 def redirect_tagesschau() -> Response:
     today = datetime.date.today()
-    if (tagesschau_url := get_latest_tagesschau_page_url_for_date(today)) :
-        if (
-            tagesschau_video_url := get_tagesschau_video_url_from_page(tagesschau_url)
-        ) :
+    if tagesschau_url := get_latest_tagesschau_page_url_for_date(today):
+        if tagesschau_video_url := get_tagesschau_video_url_from_page(tagesschau_url):
             return redirect(tagesschau_video_url, code=302)
     abort(503)
 
@@ -33,7 +31,7 @@ def redirect_tagesschau() -> Response:
 @app.route("/heute")
 def redirect_heute() -> Response:
     today = datetime.date.today()
-    if (heute_url := get_latest_heute_page_url_for_date(today)) :
-        if (heute_video_url := get_heute_video_url_from_page(heute_url)) :
+    if heute_url := get_latest_heute_page_url_for_date(today):
+        if heute_video_url := get_heute_video_url_from_page(heute_url):
             return redirect(heute_video_url, code=302)
     abort(503)
